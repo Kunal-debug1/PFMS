@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions - {{ username }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f9fc;
+        }
+.sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 250px;
+            background-color: #007bff;
+            color: white;
+            padding: 30px;
+            box-shadow: 3px 0 15px rgba(0, 0, 0, 0.1);
+            height: 100%;
+            z-index: 100;
+        }
+
+        .sidebar h4 {
+            margin-bottom: 30px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .sidebar .nav-item a {
+            color: white;
+            font-size: 16px;
+            margin-bottom: 12px;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .sidebar .nav-item a:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .sidebar .nav-item a.active {
+            background-color: #0056b3;
+        }
+
+
+        .content {
+            margin-left: 260px;
+            padding: 20px;
+        }
+
+
+        .btn-logout {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background-color: #c82333;
+        }
+
+        .transaction-table th, .transaction-table td {
+            text-align: center;
+        }
+
+        .transaction-table th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .transaction-table td {
+            background-color: #f9f9f9;
+        }
+
+        .btn-add-transaction {
+            margin-bottom: 20px;
+        }
+
+        .modal-body form input,
+        .modal-body form textarea,
+        .modal-body form select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .modal-body form textarea {
+            height: 100px;
+        }
+
+        .modal-body form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .modal-body form button:hover {
+            background-color: #0056b3;
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                height: auto;
+                padding: 10px;
+            }
+
+            .content {
+                margin-left: 0;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 sidebar">
+                <h4>Welcome, {{ username }}!</h4>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('balance') }}">
+                            <i class="fas fa-wallet"></i> Balance
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('transactions') }}">
+                            <i class="fas fa-exchange-alt"></i> Transactions
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('bills') }}">
+                            <i class="fas fa-file-invoice-dollar"></i> Bills
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('expenses') }}">
+                            <i class="fas fa-credit-card"></i> Expenses
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('goals') }}">
+                            <i class="fas fa-bullseye"></i> Goals
+                        </a>
+                    </li>
+                </ul>
+                <hr>
+                <a href="{{ url_for('logout') }}" class="btn btn-danger btn-logout">Logout</a>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 content">
+                <h2>Transactions</h2>
+                <p>Here you can view all your transactions.</p>
+
+                <!-- Add Transaction Button -->
+                <button class="btn btn-primary btn-add-transaction" data-bs-toggle="modal" data-bs-target="#addTransactionModal">Add Transaction</button>
+
+                <!-- Transactions Table -->
+                <table class="table table-bordered transaction-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Payment Type</th>
+                            <th>Amount</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction in transactions %}
+                            <tr>
+                                <td>{{ transaction.date }}</td>
+                                <td>{{ transaction.type }}</td>
+                                <td>{{ transaction.amount }}</td>
+                                <td>{{ transaction.category}}</td>
+                                <td>{{ transaction.description }}</td>
+                                <td>
+                                    <form method="POST" action="{{ url_for('delete_transaction', transaction_id=transaction.id) }}" style="display:inline;">
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- Add Transaction Modal -->
+                <div class="modal fade" id="addTransactionModal" tabindex="-1" aria-labelledby="addTransactionModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addTransactionModalLabel">Add Transaction</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST" action="{{ url_for('transactions') }}" onsubmit="return validateTransactionForm()">
+                                    <input type="date" name="date" id="date" required>
+
+                                    <select name="type" id="type" required>
+                                        <option value="credit">Credit</option>
+                                        <option value="debit">Debit</option>
+                                    </select>
+
+                                    <input type="number" name="amount" placeholder="Amount" id="amount" required>
+
+                                    <select name="category" id="category" required>
+                                        <option value="income">Income</option>
+                                        <option value="expense">Expense</option>
+                                        <option value="other">Other</option>
+                                    </select>
+
+                                    <textarea name="description" placeholder="Description" id="description"></textarea>
+
+                                    <button type="submit" class="btn btn-primary mt-3">Add Transaction</button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js"></script>
+    <script>
+        function validateTransactionForm() {
+            const date = document.getElementById('date').value;
+            const type = document.getElementById('type').value;
+            const amount = document.getElementById('amount').value;
+            const category = document.getElementById('category').value;
+
+            if (!date || !type || !amount || !category) {
+                alert("All fields are required.");
+                return false;
+            }
+            if (amount <= 0) {
+                alert("Amount must be positive.");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all flashed messages with categories
+    const messages = {{ get_flashed_messages(with_categories=True) | tojson }};
+
+    // Loop through all messages and display them as pop-ups
+    messages.forEach(([category, message]) => {
+        if (category === 'success') {
+            alert('Success: ' + message);  // Display success messages with "Success" prefix
+        } else if (category === 'error') {
+            alert('Error: ' + message);    // Display error messages with "Error" prefix
+        }
+    });
+});
+</script>
+
+</body>
+</html>

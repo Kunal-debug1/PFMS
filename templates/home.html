@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background-color: #007bff;
+            color: white;
+            padding: 120px 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: slideInLeft 1s ease-out;
+        }
+
+        .hero-section p {
+            font-size: 1.25rem;
+            margin: 20px 0;
+            font-weight: 300;
+            animation: fadeIn 2s ease-out;
+        }
+
+        .hero-section .btn {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border-radius: 5px;
+            transition: transform 0.2s ease, background-color 0.3s ease;
+            animation: fadeIn 2.5s ease-out;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: translateY(-3px);
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border: none;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+            transform: translateY(-3px);
+        }
+
+        .btn:focus {
+            outline: none;
+        }
+
+        .hero-section .btn-container {
+            margin-top: 30px;
+        }
+
+        /* Feature Icons Section */
+        .feature-icons {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+            animation: fadeIn 3s ease-out;
+        }
+
+        .feature-icons .feature-item {
+            text-align: center;
+            margin: 20px;
+            opacity: 0;
+            animation: fadeInUp 1.5s ease-out forwards;
+        }
+
+        .feature-icons .feature-item:nth-child(1) {
+            animation-delay: 0.5s;
+        }
+
+        .feature-icons .feature-item:nth-child(2) {
+            animation-delay: 1s;
+        }
+
+        .feature-icons .feature-item:nth-child(3) {
+            animation-delay: 1.5s;
+        }
+
+        .feature-icons .feature-item i {
+            font-size: 3rem;
+            color: #007bff;
+            transition: color 0.3s ease;
+        }
+
+        .feature-icons .feature-item:hover i {
+            color: #28a745;
+        }
+
+        .feature-icons .feature-item h4 {
+            margin-top: 10px;
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+
+        /* Key Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 100px 20px;
+            }
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+            .hero-section p {
+                font-size: 1rem;
+            }
+            .feature-icons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <div class="container text-center mt-5 hero-section">
+        <h1>Welcome to the Personal Finance Manager</h1>
+        <p>Manage your finances effortlessly and track your expenses, goals, and balance!</p>
+        <div class="btn-container">
+            <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
+            <a href="{{ url_for('register') }}" class="btn btn-success">Register</a>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="container feature-icons mt-5">
+        <div class="feature-item">
+            <i class="fas fa-wallet"></i>
+            <h4>Track Your Balance</h4>
+        </div>
+        <div class="feature-item">
+            <i class="fas fa-chart-line"></i>
+            <h4>Manage Expenses</h4>
+        </div>
+        <div class="feature-item">
+            <i class="fas fa-bullseye"></i>
+            <h4>Set Financial Goals</h4>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</body>
+</html>
